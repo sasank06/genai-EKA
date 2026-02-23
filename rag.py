@@ -1,11 +1,9 @@
-from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
-load_dotenv()
 
 # ===============================
 # Load Embedding Model (once)
@@ -54,10 +52,14 @@ def generate_answer(query, docs):
     context = "\n\n".join([doc.page_content for doc in docs])
 
     prompt = f"""
-Based on the context below, answer the question.
+You are extracting information from a document.
 
-If the answer exists in the context, extract it exactly.
-If it does not exist, say: I don't know.
+If the question asks for a person's name,
+look for a full uppercase name at the top of the document.
+
+Answer ONLY with the exact phrase found in the context.
+If not found, say: I don't know.
+
 
 Context:
 {context}
@@ -90,14 +92,14 @@ Answer:
 # ===============================
 # Main Runner
 # ===============================
-if __name__ == "__main__":
-    query = input("Enter your question: ")
+# if __name__ == "__main__":
+#     query = input("Enter your question: ")
 
-    docs = retrieve_chunks(query)
-    for i, doc in enumerate(docs):
-        print(f"\n--- Chunk {i+1} ---\n")
-        print(doc.page_content)
-    answer = generate_answer(query, docs)
+#     docs = retrieve_chunks(query)
+#     for i, doc in enumerate(docs):
+#         print(f"\n--- Chunk {i+1} ---\n")
+#         print(doc.page_content)
+#     answer = generate_answer(query, docs)
 
-    print("\nGenerated Answer:\n")
-    print(answer)
+#     print("\nGenerated Answer:\n")
+#     print(answer)
